@@ -3,6 +3,7 @@ name: CI-Build
 on: push
 
 env:
+  UNITY_VERSION: 2019.3.7f1
   UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
   PROJECT_ROOT: .
 
@@ -22,11 +23,12 @@ jobs:
 
       - uses: webbertakken/unity-builder@v1.0
         with:
-          unityVersion: ${{ steps.getUnityEditorVersion.outputs.versionOutput }}
+          unityVersion: ${{ env.UNITY_VERSION}}
           projectPath: ${{ env.PROJECT_ROOT }}
           targetPlatform: Android
 
-      - uses: actions/upload-artifact@v1
+      - name: Expose as artifact
+        uses: actions/upload-artifact@v1
         with:
           name: Build
           path: build
