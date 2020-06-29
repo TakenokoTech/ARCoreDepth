@@ -1,0 +1,34 @@
+name: CI-Build
+
+on: push
+
+env:
+  UNITY_VERSION: 2019.3.7f1
+  UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+  PROJECT_ROOT: .
+
+jobs:
+  createUnityPackage:
+    name: Create UnityPackage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          lfs: true
+
+      - uses: actions/cache@v1.1.0
+        with:
+          path: ${{ env.PROJECT_ROOT }}/Library
+          key: Library-${{ env.PROJECT_ROOT }}
+
+      - uses: webbertakken/unity-builder@v1.0
+        with:
+          unityVersion: ${{ env.UNITY_VERSION}}
+          projectPath: ${{ env.PROJECT_ROOT }}
+          targetPlatform: Android
+
+      - name: Expose as artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: Build
+          path: build
